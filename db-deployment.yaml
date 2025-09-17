@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: oracle-xe
+          image: gvenzl/oracle-xe:21.3.0-slim
+          ports:
+            - containerPort: 1521
+          env:
+            - name: ORACLE_PASSWORD
+              value: "1234"
+          volumeMounts:
+            - name: human-resources
+              mountPath: /opt/human_resources
+            - name: oracle-storage
+              mountPath: /opt/oracle/oradata
+      volumes:
+        - name: human-resources
+          hostPath:
+            path: /home/ubuntu/db-k8s/human_resources
+            type: DirectoryOrCreate
+        - name: oracle-storage
+          persistentVolumeClaim:
+            claimName: db-pvc
