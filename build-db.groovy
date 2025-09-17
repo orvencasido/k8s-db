@@ -1,18 +1,18 @@
 pipeline {
     agent {
         kubernetes {
-            label 'docker-kubernetes-agent'
+            label 'docker-kubectl-agent'
         }
     }
 
     stages {
         stage('build') {
             steps {
-                container('kubernetes') {
+                container('kubectl') {
                     script {
-                        sh """
+                        sh '''
                             kubectl apply -f .
-                        """
+                        '''
                     }
                 }
             }
